@@ -21,7 +21,8 @@ class Table {
 
   bigInt(column) {
     col = column;
-    params.push(`${col} BIGINT NOT NULL AUTO_INCREMENT`);
+    params.push(`${col} BIGINT`);
+    return new PrivateMethod();
   }
 
   string(column, length = 255) {
