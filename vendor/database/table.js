@@ -1,5 +1,5 @@
 let col = "";
-const params = [];
+let params = [];
 
 class PrivateMethod {
   nullable() {
@@ -19,6 +19,11 @@ class Table {
     params.push(`PRIMARY KEY (${col})`);
   }
 
+  bigInt(column) {
+    col = column;
+    params.push(`${col} BIGINT NOT NULL AUTO_INCREMENT`);
+  }
+
   string(column, length = 255) {
     col = column;
     params.push(`${col} VARCHAR(${length})`);
@@ -32,6 +37,9 @@ class Table {
   timestamps() {
     params.push(`created_at TIMESTAMP NULL`);
     params.push(`updated_at TIMESTAMP NULL`);
+  }
+  resetParams() {
+    params = [];
   }
 }
 

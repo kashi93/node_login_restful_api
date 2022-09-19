@@ -1,7 +1,8 @@
 const { MySqlConnection } = require("../database/mysql.connection");
 const yargs = require("yargs");
 const fs = require("fs");
-const { params } = require("../database/table");
+const { Table, params } = require("../database/table");
+
 require("dotenv").config();
 const env = process.env;
 
@@ -25,6 +26,7 @@ yargs.command({
       if (!argv.rollback) {
         const m2 = m1.up();
         await db.query(`CREATE TABLE ${m2.name} (${params.join(",")})`);
+        Table.resetParams();
       } else {
         const m2 = m1.down();
         await db.query(`DROP TABLE ${m2.name}`);
