@@ -22,6 +22,21 @@ class Model {
     });
   }
 
+  update(params) {
+    return new Promise(async (res, rej) => {
+      try {
+        let p = await this.objToParam2(params);
+        p = await this.updateTimeStamp(p);
+        const p2 = await this.paramToString();
+        const query = `UPDATE ${this.table} SET ${p.data.join(",")} ${p2}`;
+        await this.execute(query);
+        res(true);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
   async createTimeStamp(current_params) {
     if (this.useTimeStamps) {
       if (this.created_at == null) {
@@ -38,6 +53,17 @@ class Model {
       } else {
         current_params.columns.push("updated_at");
         current_params.data.push(this.updated_at);
+      }
+    }
+    return current_params;
+  }
+
+  async updateTimeStamp(current_params) {
+    if (this.useTimeStamps) {
+      if (this.updated_at == null) {
+        current_params.data.push(`updated_at='${this.dateTime()}'`);
+      } else {
+        current_params.data.push(`updated_at='${this.updated_at}'`);
       }
     }
     return current_params;
@@ -86,6 +112,25 @@ class Model {
 
     return {
       columns,
+      data,
+    };
+  }
+
+  async objToParam2(obj) {
+    const data = [];
+    const keys = Object.getOwnPropertyNames(obj);
+
+    for await (const key of keys) {
+      if (key == "created_at") {
+        this.created_at = `${key}='${obj[key]}'`;
+      } else if (key == "updated_at") {
+        this.updated_at = `${key}='${obj[key]}'`;
+      } else {
+        data.push(`${key}='${obj[key]}'`);
+      }
+    }
+
+    return {
       data,
     };
   }
