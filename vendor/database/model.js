@@ -37,6 +37,19 @@ class Model {
     });
   }
 
+  delete() {
+    return new Promise(async (res, rej) => {
+      try {
+        const p2 = await this.paramToString();
+        const query = `DELETE FROM ${this.table} ${p2}`;
+        await this.execute(query);
+        res(true);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
   async createTimeStamp(current_params) {
     if (this.useTimeStamps) {
       if (this.created_at == null) {
